@@ -14,6 +14,6 @@
 :white_square_button: Web client and API will be deployed to AWS with cloudfront serving User media from a secure S3 bucket.  
 ### Product backlog
 * Windows, Android, and Mac build.  
-* Video recording capability for posture and technique practice session review.
+* Video recording capability for posture and technique practice session review.  
 * App provides a tuner.  
-* Access keys can be generated for teachers to track student's practice progress.
+* Access keys can be generated for teachers to track student's practice progress.  
