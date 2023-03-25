@@ -10,10 +10,10 @@
 :white_check_mark: App shares a common API that is called cross-platform.  
 :white_square_button: Client will be migrated to Blazor hybrid and output to IOS and Web  
 :white_square_button: Practice session state is cached in the DB and shared across platforms.  
-:white_check_mark: API features a short term JWT Auth system (One minute expiry) with a long term Refresh Token stored on the Database.
-:white_square_button: Web client and API will be deployed to AWS with cloudfront serving User media from a secure S3 bucket.
+:white_check_mark: API features a short term JWT Auth system (One minute expiry) with a long term Refresh Token stored on the Database.  
+:white_square_button: Web client and API will be deployed to AWS with cloudfront serving User media from a secure S3 bucket.  
 ### Product backlog
-* Windows, Android, and Mac build.
+* Windows, Android, and Mac build.  
 * Video recording capability for posture and technique practice session review.
-* App provides a tuner.
+* App provides a tuner.  
 * Access keys can be generated for teachers to track student's practice progress.
