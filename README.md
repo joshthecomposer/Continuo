@@ -3,7 +3,7 @@
 ### Minimum Viable Product
 :white_square_button: Users can create and schedule practice sessions with tasks.  
 :white_check_mark: App features a dynamically rendered calendar for scheduling.  
-:white_square_button: Practicce sessions can be repeated automatically or as often as wanted on a dynamic calendar.  
+:white_square_button: Practice sessions can be repeated automatically or as often as wanted on a dynamic calendar.  
 :white_check_mark: Tasks can be shared between sessions and vice-versa (Many-to-Many)  
 :white_check_mark: Tasks are associated with instruments on a one-to-one basis, but Sessions can contain tasks of different instruments. (User might practice a scale on a guitar and an Etude on Piano in one practice session).  
 :white_square_button: App provides a metronome for use during practice.  
