@@ -1,0 +1,109 @@
+@inject IConfiguration _config;
+@inject ProtectedLocalStorage storage;
+@inject NavigationManager nav;
+@using ContinuoClient.Frameworks;
+@using System.Text.Json;
+
+@page "/calendar"
+
+<div class="text-neutral-100 font-oswald h-screen flex flex-col items-center justify-center px-6 py-10">
+    <div class="text-neutral-100 text-center bg-neutral-800 justify-center items-center p-5 rounded shadow-lg">
+        <div class="flex gap-5 self-start uppercase items-center">
+            <div class="flex gap-2 items-center justify-between w-[100px]">
+                <p @onclick="()=>IterateMonth(-1)" class="hover:cursor-pointer"> &lt; </p>
+                <h2 class="text-green-700 underline">@initDate.ToString("MMMM")</h2>
+                <p @onclick="()=>IterateMonth(1)" class="hover:cursor-pointer"> &gt; </p>
+            </div>
+            <div class="flex gap-2 items-center justify-between w-[65px]">
+                <p @onclick="()=>IterateYear(-1)" class="hover:cursor-pointer"> &lt; </p>
+                <h2 class="underline">@initDate.Year</h2>
+                <p @onclick="()=>IterateYear(1)" class="hover:cursor-pointer"> &gt; </p>
+            </div>
+        </div>
+        <div class="grid grid-cols-7 gap-3">
+            <p class="w-[25px]">Sun</p>
+            <p class="w-[25px]">Mon</p>
+            <p class="w-[25px]">Tue</p>
+            <p class="w-[25px]">Wed</p>
+            <p class="w-[25px]">Thu</p>
+            <p class="w-[25px]">Fri</p>
+            <p class="w-[25px]">Sat</p>
+            @foreach(int i in prevDaysArr)
+            {
+                <p class="rounded-full text-neutral-600 bg-transparent text-center w-[25px]">@i</p>
+            }
+            @foreach(int j in fullMonth)
+            {
+                <p class="rounded-full bg-neutral-700 text-center w-[25px]">@j</p>
+            }
+            @foreach(int k in extraDaysArr)
+            {
+                <p class="rounded-full text-neutral-600 bg-transparent text-center w-[25px]">@k</p>
+            }
+        </div>
+    </div>
+</div>
+
+@code{
+    #pragma warning disable CS8618
+    static int[] fullMonth;
+    static int[] prevDaysArr;
+    static int[] extraDaysArr;
+    static DateTime now = DateTime.Now;
+
+    DateOnly initDate = new(now.Year, now.Month, 1);
+
+    protected override void OnInitialized()
+    {
+        CalculateCalendar();
+    }
+
+    public void CalculateCalendar()
+    {
+        //TODO: Seperate out Leading Days and extra days into different arrays??
+        int startMonth = initDate.Month;
+        int startYear = initDate.Year;
+
+        DateTime init = new DateTime(startYear, startMonth, 1);
+
+        int startDay = (int)init.DayOfWeek;
+
+        int lastDay = DateTime.DaysInMonth(startYear , startMonth);
+
+        int prevLastDay = DateTime.DaysInMonth(startYear, initDate.AddMonths(-1).Month);
+
+        int[] days = new int[lastDay];
+
+        prevDaysArr = new int[startDay];
+        extraDaysArr = new int[42-lastDay-startDay];
+
+        fullMonth = new int[lastDay];
+    
+        for (int j = startDay-1; j >= 0; j--)
+        {
+            prevDaysArr[j] = prevLastDay;
+            prevLastDay--;
+        }
+        for (int i = 1; i <= lastDay; i++)
+        {
+            fullMonth[i-1] = i;
+        }
+
+        for (int k = 1; k <= extraDaysArr.Length; k++)
+        {
+            extraDaysArr[k-1] = k;
+        }
+    }
+
+    public void IterateMonth(int i)
+    {
+        initDate = initDate.AddMonths(i);
+        CalculateCalendar();
+    }
+
+    public void IterateYear(int i )
+    {
+        initDate = initDate.AddYears(i);
+        CalculateCalendar();
+    }
+}

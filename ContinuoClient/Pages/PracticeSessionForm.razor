@@ -1,0 +1,58 @@
+@inject InstrumentService instServ;
+@inject ApiRequestService requestServ;
+@inject UserController userController;
+@inject ProtectedLocalStorage storage;
+@inject IConfiguration _config;
+@inject NavigationManager nav;
+@inject ClientAuthController clientAuthController;
+@using ContinuoClient.Frameworks;
+
+@page "/sessions/create"
+
+<div class="h-screen flex flex-col items-center justify-center">
+    <h1 class="font-oswald uppercase text-2xl text-neutral-100 mb-1 font-semibold uppercase">Let's plan your first practice session.</h1>
+    <p class="font-oswald uppercase text-neutral-700 mb-2 font-semibold">(first, give it a description "Every Monday" or "Weekdays")</p>
+    <EditForm Model="@practiceSession" OnValidSubmit="@CreatePracticeSession" class="w-full max-w-lg px-5">
+        <DataAnnotationsValidator />
+        <ValidationMessage class="text-red-800" For="@(()=> practiceSession.Title)" />
+        <InputText @bind-Value="practiceSession.Title" type="text" for="Description"
+        class="border block outline-0 w-full bg-transparent text-neutral-100 text-xl text-center py-2 px-4 mb-3 border-b-2 border-t-0 border-x-0 border-neutral-100"
+          id="grid-first-name" />
+        <button type="submit"
+            class="text-neutral-100 text-lg uppercase font-bold py-2 px-4 w-full hidden">Submit</button>
+    </EditForm>
+</div>
+
+@code
+{
+    //TODO: Find a way to use components to allow these forms to be more modular and not as copy-pasty
+
+    PracticeSession practiceSession = new();
+
+    public async Task CreatePracticeSession()
+    {
+        UserAuthModel authUser = await clientAuthController.CheckStorage();
+        if (authUser.Authorized)
+        {
+            practiceSession.UserId = authUser.UserId;
+            string uri = "http://localhost:5248/api/sessions/create";
+            PracticeSession attemptCreate =(PracticeSession)await requestServ.InitiatePostRequest(uri, authUser.AccessToken, ApiReturnType.PracticeSession,(object)practiceSession);
+            if (attemptCreate == null)
+            {
+                RefreshRequest rq = new RefreshRequest(authUser.AccessToken, authUser.RefreshToken);
+                RefreshRequest response = await userController.TryRefreshToken(rq);
+                Console.WriteLine("Refreshed token is: "+response.AccessToken);
+                if (response != null)
+                {
+                    attemptCreate =(PracticeSession) await requestServ.InitiatePostRequest(uri, response.AccessToken, ApiReturnType.PracticeSession, (object)practiceSession);
+                    if (attemptCreate == null)
+                    {
+                        await clientAuthController.Logout();
+                    }
+                }
+            }
+            nav.NavigateTo("/dashboard");
+        }
+
+    }
+}

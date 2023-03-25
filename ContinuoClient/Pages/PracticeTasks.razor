@@ -1,0 +1,38 @@
+@inject ClientAuthController clientAuthController;
+@inject ClientPracticeTaskController taskController;
+@inject UserController userController;
+@inject IConfiguration _config;
+@inject ProtectedLocalStorage storage;
+@inject ApiRequestService requestServ;
+@using ContinuoClient.Frameworks;
+
+@page "/tasks"
+
+@foreach(PracticeTask t in tasks)
+{
+    
+}
+
+@code{
+     List<PracticeTask> tasks = new();
+    protected async override Task OnInitializedAsync()
+    {
+        UserAuthModel authUser = await clientAuthController.CheckStorage();
+        string uri = "http://localhost:5248/api/sessions/tasks/" + authUser.UserId;
+        tasks = (List<PracticeTask>) await requestServ.InitiateGetRequest(uri, authUser.AccessToken, ApiReturnType.PracticeTaskList);
+        if (tasks == null)
+        {
+            RefreshRequest rq = new RefreshRequest(authUser.AccessToken, authUser.RefreshToken);
+            RefreshRequest response = await userController.TryRefreshToken(rq);
+            Console.WriteLine("Refreshed token is: "+response.AccessToken);
+            if (response != null)
+            {
+                tasks = (List<PracticeTask>) await requestServ.InitiateGetRequest(uri, response.AccessToken, ApiReturnType.PracticeTaskList);
+                if (tasks == null)
+                {
+                    await clientAuthController.Logout();
+                }
+            }
+        }
+    }
+}

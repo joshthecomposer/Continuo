@@ -1,0 +1,50 @@
+@inject InstrumentService instServ;
+@inject UserController userController;
+@inject ProtectedLocalStorage storage;
+@inject IConfiguration _config;
+@inject NavigationManager nav;
+@inject ClientAuthController clientAuthController;
+@page "/instruments/create"
+
+<div class="h-screen flex flex-col items-center justify-center">
+    <h1 class="font-oswald uppercase text-2xl text-neutral-100 mb-1 font-semibold uppercase">Enter your main instrument</h1>
+    <p class="font-oswald uppercase text-neutral-700 mb-2 font-semibold">(you can add more later)</p>
+    <EditForm Model="@instrument" OnValidSubmit="@CreateInstrument" class="w-full max-w-lg px-5">
+        <DataAnnotationsValidator />
+        <ValidationMessage class="text-red-800" For="@(()=> instrument.Name)" />
+        <InputText @bind-Value="instrument.Name" type="text" for="Name"
+        class="border block outline-0 w-full bg-transparent text-neutral-100 text-xl text-center py-2 px-4 mb-3 border-b-2 border-t-0 border-x-0 border-neutral-100"
+          id="grid-first-name" />
+        <button type="submit"
+            class="text-neutral-100 text-lg uppercase font-bold py-2 px-4 w-full hidden">Submit</button>
+    </EditForm>
+</div>
+@code {
+    Instrument instrument = new();
+    private async Task CreateInstrument()
+    {
+        //TODO: Create a general post request function similar to my GET request builder so that all these forms can call the same function.
+        UserAuthModel authUser = await clientAuthController.CheckStorage();
+        if(authUser.Authorized)
+        {
+            instrument.UserId = authUser.UserId;
+            Instrument attemptCreate = await instServ.CreateInstrumentAsync(instrument, authUser.AccessToken);
+            //TODO: Move the refresh token attempt into the userController or the clientAuth instead of here.
+            if (attemptCreate == null)
+            {
+                RefreshRequest rq = new RefreshRequest(authUser.AccessToken, authUser.RefreshToken);
+                RefreshRequest response = await userController.TryRefreshToken(rq);
+                Console.WriteLine("Refreshed token is: "+response.AccessToken);
+                if (response != null)
+                {
+                    Instrument attemptAgain = await instServ.CreateInstrumentAsync(instrument, response.AccessToken);
+                    if (attemptAgain == null)
+                    {
+                        await clientAuthController.Logout();
+                    }
+                }
+            }
+            nav.NavigateTo("/dashboard");
+        }
+    }
+}

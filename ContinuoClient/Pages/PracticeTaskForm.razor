@@ -1,0 +1,30 @@
+@* @inject InstrumentService instServ;
+@inject UserController userController;
+@inject ProtectedLocalStorage storage;
+@inject IConfiguration _config;
+@inject NavigationManager nav;
+@inject ClientAuthController clientAuthController;
+@page "/instruments/create"
+
+<div class="h-screen flex flex-col items-center justify-center">
+    <h1 class="font-oswald uppercase text-2xl text-neutral-100 mb-1 font-semibold uppercase"></h1>
+    <p class="font-oswald uppercase text-neutral-700 mb-2 font-semibold">(you can add more later)</p>
+    <EditForm Model="@practiceTask" OnValidSubmit="@CreatePracticeTask" class="w-full max-w-lg px-5">
+        <DataAnnotationsValidator />
+        <ValidationMessage class="text-red-800" For="@(()=> practiceTask.Description)" />
+        <InputText @bind-Value="practiceTask.Description" type="text" for="Description"
+        class="border block outline-0 w-full bg-transparent text-neutral-100 text-xl text-center py-2 px-4 mb-3 border-b-2 border-t-0 border-x-0 border-neutral-100"
+          id="grid-first-name" />
+        <button type="submit"
+            class="text-neutral-100 text-lg uppercase font-bold py-2 px-4 w-full">Submit</button>
+    </EditForm>
+</div>
+
+@code
+{
+    PracticeTask practiceTask = new();
+
+    public async Task CreatePracticetask()
+    {
+    }
+} *@

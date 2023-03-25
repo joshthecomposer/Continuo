@@ -1,0 +1,40 @@
+@inject ClientAuthController clientAuthController;
+@inject ApiRequestService requestServ;
+@inject UserController userController;
+@inject IConfiguration _config;
+@inject ProtectedLocalStorage storage;
+@using ContinuoClient.Frameworks;
+
+@page "/dashboard"
+
+<div class="h-screen flex flex-col items-center justify-center">
+    @foreach(Instrument i in instruments)
+    {
+        <p class="text-neutral-100 text-2xl uppercase">@i.Name</p>
+    }
+</div>
+
+@code {
+    List<Instrument> instruments = new();
+    protected async override Task OnInitializedAsync()
+    {
+        UserAuthModel authUser = await clientAuthController.CheckStorage();
+        string uri = "http://localhost:5248/api/instruments/" + authUser.UserId;
+        instruments = (List<Instrument>) await requestServ.InitiateGetRequest(uri, authUser.AccessToken, ApiReturnType.InstrumentList);
+        if (instruments == null)
+        {
+            RefreshRequest rq = new RefreshRequest(authUser.AccessToken, authUser.RefreshToken);
+            RefreshRequest response = await userController.TryRefreshToken(rq);
+            Console.WriteLine("Refreshed token is: "+response.AccessToken);
+            if (response != null)
+            {
+                instruments = (List<Instrument>) await requestServ.InitiateGetRequest(uri, response.AccessToken, ApiReturnType.InstrumentList);
+                if (instruments == null) 
+                { 
+                    await clientAuthController.Logout(); 
+                }
+            }
+        }
+    }
+}
+
