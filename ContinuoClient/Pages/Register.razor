@@ -8,13 +8,13 @@
         <DataAnnotationsValidator/>
         <div class="flex flex-wrap -mx-3 gap-3">
             <div class="flex w-full">
-                <div class="w-1/2 px-3 ">
+                <div class="flex flex-col gap-2 w-1/2 px-3 ">
                     <label class="flex block uppercase tracking-wide text-neutral-100 text-xs font-bold  gap-3" for="grid-first-name">
                         First Name <ValidationMessage class="text-red-800" For="@(()=> user.FirstName)" />
                     </label>
                     <InputText @bind-Value="user.FirstName" for="FirstName" class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane" />
                 </div>
-                <div class="w-1/2 px-3">
+                <div class="flex flex-col gap-2 w-1/2 px-3">
                     <label class="flex gap-3 uppercase tracking-wide text-neutral-100 text-xs font-bold" for="grid-first-name">
                         Last Name
                     <ValidationMessage class="text-red-800" For="@(()=> user.LastName)" />
@@ -22,7 +22,7 @@
                     <InputText @bind-Value="user.LastName" for="LastName" class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Doe" />
                 </div>
             </div>
-            <div class="w-full px-3">
+            <div class="flex flex-col gap-2 w-full px-3">
                 <label class="flex gap-3 uppercase tracking-wide text-neutral-100 text-xs font-bold " for="grid-first-name">
                     Email
                     <ValidationMessage class="text-red-800" For="@(()=> user.Email)" />
@@ -30,14 +30,14 @@
                 <InputText @bind-Value="user.Email" for="Email" class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-2 px-4  leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="example@email.com" />
             </div>
             <div class="flex w-full">
-                <div class="w-1/2 px-3">
+                <div class="flex flex-col gap-2 w-1/2 px-3">
                     <label class="flex gap-3 uppercase tracking-wide text-neutral-100 text-xs font-bold " for="grid-first-name">
                         Password
                         <ValidationMessage class="text-red-800" For="@(()=> user.Password)" />
                     </label>
                     <InputText @bind-Value="user.Password" for="Password" class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-2 px-4  leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="password" placeholder="********" />
                 </div>
-                <div class="w-1/2 px-3">
+                <div class="flex flex-col gap-2 w-1/2 px-3">
                     <label class="flex gap-3 uppercase tracking-wide text-neutral-100 text-xs font-bold " for="grid-first-name">
                         Confirm
                         <ValidationMessage class="text-red-800" For="@(()=> user.Confirm)" />
