@@ -7,11 +7,12 @@
 @inject ClientAuthController clientAuthController;
 @using ContinuoClient.Frameworks;
 
-@page "/sessions/create"
+@page "/sessions/create/{Year:int?}/{Month:int?}/{Day:int?}"
 
 <div class="h-screen flex flex-col items-center justify-center">
-    <h1 class="font-oswald uppercase text-2xl text-neutral-100 mb-1 font-semibold uppercase">Let's plan your first practice session.</h1>
-    <p class="font-oswald uppercase text-neutral-700 mb-2 font-semibold">(first, give it a description "Every Monday" or "Weekdays")</p>
+    <h1 class="font-oswald uppercase text-2xl text-neutral-100 mb-1 font-semibold uppercase">Plan a practice session.</h1>
+    <p class="font-oswald uppercase text-neutral-700 mb-2 font-semibold">For @Month/@Day/@Year</p>
+    <p class="font-oswald uppercase text-neutral-700 mb-2 font-semibold">(Give this session a title)</p>
     <EditForm Model="@practiceSession" OnValidSubmit="@CreatePracticeSession" class="w-full max-w-lg px-5">
         <DataAnnotationsValidator />
         <ValidationMessage class="text-red-800" For="@(()=> practiceSession.Title)" />
@@ -28,6 +29,12 @@
     //TODO: Find a way to use components to allow these forms to be more modular and not as copy-pasty
 
     PracticeSession practiceSession = new();
+    [Parameter]
+    public int Year { get; set; }
+    [Parameter]
+    public int Month { get; set; }
+    [Parameter]
+    public int Day { get; set; }
 
     public async Task CreatePracticeSession()
     {

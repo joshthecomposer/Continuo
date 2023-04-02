@@ -34,7 +34,7 @@
             }
             @foreach(int j in fullMonth)
             {
-                <p class="rounded-full bg-neutral-700 text-center w-[25px]">@j</p>
+                <p @onclick="()=>GoToSessionForm(initDate.Year, initDate.Month, j)" class="rounded-full bg-neutral-700 text-center w-[25px] hover:cursor-pointer">@j</p>
             }
             @foreach(int k in extraDaysArr)
             {
@@ -78,7 +78,7 @@
         extraDaysArr = new int[42-lastDay-startDay];
 
         fullMonth = new int[lastDay];
-    
+
         for (int j = startDay-1; j >= 0; j--)
         {
             prevDaysArr[j] = prevLastDay;
@@ -105,5 +105,10 @@
     {
         initDate = initDate.AddYears(i);
         CalculateCalendar();
+    }
+
+    public void GoToSessionForm(int year, int month, int day)
+    {
+        nav.NavigateTo($"/sessions/create/{year}/{month}/{day}");
     }
 }
